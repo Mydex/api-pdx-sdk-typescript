@@ -45,6 +45,10 @@ export class SecureMessage {
     */
     'messageContent'?: string;
     /**
+    * A UUIDv4 that uniquely identifies the service this message relates to, if one was provided
+    */
+    'serviceIdentifier'?: string;
+    /**
     * Message status
     */
     'status'?: SecureMessageStatusEnum;
@@ -95,6 +99,12 @@ export class SecureMessage {
             "baseName": "message_content",
             "type": "string",
             "format": ""
+        },
+        {
+            "name": "serviceIdentifier",
+            "baseName": "service_identifier",
+            "type": "string",
+            "format": "uuid"
         },
         {
             "name": "status",

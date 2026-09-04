@@ -24,6 +24,10 @@ export class TimelineItemReferral {
     * ID of the feature block record i.e. the referral id
     */
     'featureBlockId'?: number;
+    /**
+    * A UUIDv4 that uniquely identifies the service this referral relates to
+    */
+    'serviceIdentifier'?: string;
     'instance'?: string;
     /**
     * The context within which this record was created i.e. the specific connection
@@ -76,6 +80,12 @@ export class TimelineItemReferral {
             "baseName": "feature_block_id",
             "type": "number",
             "format": ""
+        },
+        {
+            "name": "serviceIdentifier",
+            "baseName": "service_identifier",
+            "type": "string",
+            "format": "uuid"
         },
         {
             "name": "instance",

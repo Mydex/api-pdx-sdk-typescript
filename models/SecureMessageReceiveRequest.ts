@@ -25,6 +25,14 @@ export class SecureMessageReceiveRequest {
     */
     'conversationId': string;
     /**
+    * A UUIDv4 that uniquely identifies the service this message relates to. Optional, but when present allows the SP to link the message to a specific service.
+    */
+    'serviceIdentifier'?: string;
+    /**
+    * ID of the service this message relates to. Optional.
+    */
+    'serviceId'?: number;
+    /**
     * Sender user ID
     */
     'messageFrom': string;
@@ -44,6 +52,18 @@ export class SecureMessageReceiveRequest {
             "name": "conversationId",
             "baseName": "conversation_id",
             "type": "string",
+            "format": ""
+        },
+        {
+            "name": "serviceIdentifier",
+            "baseName": "service_identifier",
+            "type": "string",
+            "format": "uuid"
+        },
+        {
+            "name": "serviceId",
+            "baseName": "service_id",
+            "type": "number",
             "format": ""
         },
         {

@@ -21,6 +21,14 @@ export class SecureMessageCommonFields {
     * ID of the conversation formatted like {context}-{context_id} where context is e.g. \'referral\' and context_id is the id of the specifc record in that context.
     */
     'conversationId': string;
+    /**
+    * A UUIDv4 that uniquely identifies the service this message relates to. Optional, but when present allows the SP to link the message to a specific service.
+    */
+    'serviceIdentifier'?: string;
+    /**
+    * ID of the service this message relates to. Optional.
+    */
+    'serviceId'?: number;
 
     static readonly discriminator: string | undefined = undefined;
 
@@ -37,6 +45,18 @@ export class SecureMessageCommonFields {
             "name": "conversationId",
             "baseName": "conversation_id",
             "type": "string",
+            "format": ""
+        },
+        {
+            "name": "serviceIdentifier",
+            "baseName": "service_identifier",
+            "type": "string",
+            "format": "uuid"
+        },
+        {
+            "name": "serviceId",
+            "baseName": "service_id",
+            "type": "number",
             "format": ""
         }    ];
 

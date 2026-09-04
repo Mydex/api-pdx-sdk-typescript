@@ -22,6 +22,10 @@ export class ReferralCommonRequestBodyFields {
     */
     'serviceId'?: number;
     /**
+    * A UUIDv4 that uniquely identifies the service this referral relates to
+    */
+    'serviceIdentifier'?: string;
+    /**
     * Background information about the referree
     */
     'referreeBackground'?: string;
@@ -73,6 +77,12 @@ export class ReferralCommonRequestBodyFields {
             "baseName": "service_id",
             "type": "number",
             "format": ""
+        },
+        {
+            "name": "serviceIdentifier",
+            "baseName": "service_identifier",
+            "type": "string",
+            "format": "uuid"
         },
         {
             "name": "referreeBackground",

@@ -14,6 +14,10 @@ import { HttpFile } from '../http/http';
 
 export class ReferralListResponseReferralsInner {
     'id'?: number;
+    /**
+    * A UUIDv4 that uniquely identifies the service this referral relates to
+    */
+    'serviceIdentifier'?: string;
     'createdTimestamp'?: number;
     'serviceId'?: number;
     'serviceName'?: string;
@@ -34,6 +38,12 @@ export class ReferralListResponseReferralsInner {
             "baseName": "id",
             "type": "number",
             "format": ""
+        },
+        {
+            "name": "serviceIdentifier",
+            "baseName": "service_identifier",
+            "type": "string",
+            "format": "uuid"
         },
         {
             "name": "createdTimestamp",
