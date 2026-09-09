@@ -1,3 +1,6 @@
+export * from '../models/AddReferralData'
+export * from '../models/AddReferralRequestBody'
+export * from '../models/AddReferralResponse'
 export * from '../models/AuthErrorResponse'
 export * from '../models/AuthErrorResponseError'
 export * from '../models/CalendarAppointmentCreateRequestBody'

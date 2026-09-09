@@ -2,6 +2,9 @@ import { ResponseContext, RequestContext, HttpFile, HttpInfo } from '../http/htt
 import { Configuration, PromiseConfigurationOptions, wrapOptions } from '../configuration'
 import { PromiseMiddleware, Middleware, PromiseMiddlewareWrapper } from '../middleware';
 
+import { AddReferralData } from '../models/AddReferralData';
+import { AddReferralRequestBody } from '../models/AddReferralRequestBody';
+import { AddReferralResponse } from '../models/AddReferralResponse';
 import { AuthErrorResponse } from '../models/AuthErrorResponse';
 import { AuthErrorResponseError } from '../models/AuthErrorResponseError';
 import { CalendarAppointmentCreateRequestBody } from '../models/CalendarAppointmentCreateRequestBody';
@@ -238,6 +241,34 @@ export class PromiseReferralsApi {
         responseProcessor?: ReferralsApiResponseProcessor
     ) {
         this.api = new ObservableReferralsApi(configuration, requestFactory, responseProcessor);
+    }
+
+    /**
+     * Creates a new referral in the member\'s PDS targeting a remote service identified by a DSSA UUID. If the member is already connected to the remote DSSA the referral is created with status \'complete\' and the remote service is notified. If the member is not connected the referral is created with status \'pending\' and either an FTC URL is returned (member_present=true) or a notification is sent to the member (member_present=false).
+     * Initiates a referral to a remote DSSA.
+     * @param connectionToken Member\&#39;s Connection Key
+     * @param uid The unique ID of a mydex member
+     * @param conId The connection_id is a shared id between a connection and a member. It is a hyphenated combination of the member UID and the Dedicated Connection NID.
+     * @param [addReferralRequestBody]
+     */
+    public addReferralWithHttpInfo(connectionToken: string, uid: string, conId: string, addReferralRequestBody?: AddReferralRequestBody, _options?: PromiseConfigurationOptions): Promise<HttpInfo<AddReferralResponse>> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.addReferralWithHttpInfo(connectionToken, uid, conId, addReferralRequestBody, observableOptions);
+        return result.toPromise();
+    }
+
+    /**
+     * Creates a new referral in the member\'s PDS targeting a remote service identified by a DSSA UUID. If the member is already connected to the remote DSSA the referral is created with status \'complete\' and the remote service is notified. If the member is not connected the referral is created with status \'pending\' and either an FTC URL is returned (member_present=true) or a notification is sent to the member (member_present=false).
+     * Initiates a referral to a remote DSSA.
+     * @param connectionToken Member\&#39;s Connection Key
+     * @param uid The unique ID of a mydex member
+     * @param conId The connection_id is a shared id between a connection and a member. It is a hyphenated combination of the member UID and the Dedicated Connection NID.
+     * @param [addReferralRequestBody]
+     */
+    public addReferral(connectionToken: string, uid: string, conId: string, addReferralRequestBody?: AddReferralRequestBody, _options?: PromiseConfigurationOptions): Promise<AddReferralResponse> {
+        const observableOptions = wrapOptions(_options);
+        const result = this.api.addReferral(connectionToken, uid, conId, addReferralRequestBody, observableOptions);
+        return result.toPromise();
     }
 
     /**

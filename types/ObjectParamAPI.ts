@@ -2,6 +2,9 @@ import { ResponseContext, RequestContext, HttpFile, HttpInfo } from '../http/htt
 import { Configuration, ConfigurationOptions } from '../configuration'
 import type { Middleware } from '../middleware';
 
+import { AddReferralData } from '../models/AddReferralData';
+import { AddReferralRequestBody } from '../models/AddReferralRequestBody';
+import { AddReferralResponse } from '../models/AddReferralResponse';
 import { AuthErrorResponse } from '../models/AuthErrorResponse';
 import { AuthErrorResponseError } from '../models/AuthErrorResponseError';
 import { CalendarAppointmentCreateRequestBody } from '../models/CalendarAppointmentCreateRequestBody';
@@ -345,6 +348,36 @@ export class ObjectCalendarApi {
 import { ObservableReferralsApi } from "./ObservableAPI";
 import { ReferralsApiRequestFactory, ReferralsApiResponseProcessor} from "../apis/ReferralsApi";
 
+export interface ReferralsApiAddReferralRequest {
+    /**
+     * Member\&#39;s Connection Key
+     * Defaults to: undefined
+     * @type string
+     * @memberof ReferralsApiaddReferral
+     */
+    connectionToken: string
+    /**
+     * The unique ID of a mydex member
+     * Defaults to: undefined
+     * @type string
+     * @memberof ReferralsApiaddReferral
+     */
+    uid: string
+    /**
+     * The connection_id is a shared id between a connection and a member. It is a hyphenated combination of the member UID and the Dedicated Connection NID.
+     * Defaults to: undefined
+     * @type string
+     * @memberof ReferralsApiaddReferral
+     */
+    conId: string
+    /**
+     * 
+     * @type AddReferralRequestBody
+     * @memberof ReferralsApiaddReferral
+     */
+    addReferralRequestBody?: AddReferralRequestBody
+}
+
 export interface ReferralsApiGetAllReferralsRequest {
     /**
      * Member\&#39;s Connection Key
@@ -465,6 +498,24 @@ export class ObjectReferralsApi {
 
     public constructor(configuration: Configuration, requestFactory?: ReferralsApiRequestFactory, responseProcessor?: ReferralsApiResponseProcessor) {
         this.api = new ObservableReferralsApi(configuration, requestFactory, responseProcessor);
+    }
+
+    /**
+     * Creates a new referral in the member\'s PDS targeting a remote service identified by a DSSA UUID. If the member is already connected to the remote DSSA the referral is created with status \'complete\' and the remote service is notified. If the member is not connected the referral is created with status \'pending\' and either an FTC URL is returned (member_present=true) or a notification is sent to the member (member_present=false).
+     * Initiates a referral to a remote DSSA.
+     * @param param the request object
+     */
+    public addReferralWithHttpInfo(param: ReferralsApiAddReferralRequest, options?: ConfigurationOptions): Promise<HttpInfo<AddReferralResponse>> {
+        return this.api.addReferralWithHttpInfo(param.connectionToken, param.uid, param.conId, param.addReferralRequestBody,  options).toPromise();
+    }
+
+    /**
+     * Creates a new referral in the member\'s PDS targeting a remote service identified by a DSSA UUID. If the member is already connected to the remote DSSA the referral is created with status \'complete\' and the remote service is notified. If the member is not connected the referral is created with status \'pending\' and either an FTC URL is returned (member_present=true) or a notification is sent to the member (member_present=false).
+     * Initiates a referral to a remote DSSA.
+     * @param param the request object
+     */
+    public addReferral(param: ReferralsApiAddReferralRequest, options?: ConfigurationOptions): Promise<AddReferralResponse> {
+        return this.api.addReferral(param.connectionToken, param.uid, param.conId, param.addReferralRequestBody,  options).toPromise();
     }
 
     /**

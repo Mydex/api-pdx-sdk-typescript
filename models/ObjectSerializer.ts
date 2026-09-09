@@ -1,3 +1,6 @@
+export * from '../models/AddReferralData';
+export * from '../models/AddReferralRequestBody';
+export * from '../models/AddReferralResponse';
 export * from '../models/AuthErrorResponse';
 export * from '../models/AuthErrorResponseError';
 export * from '../models/CalendarAppointmentCreateRequestBody';
@@ -36,6 +39,9 @@ export * from '../models/TimelineSingleItemResponse';
 export * from '../models/TimelineSingleItemResponseTimelineItem';
 export * from '../models/UpdateResponse';
 
+import { AddReferralData } from '../models/AddReferralData';
+import { AddReferralRequestBody } from '../models/AddReferralRequestBody';
+import { AddReferralResponse , AddReferralResponseStatusEnum       } from '../models/AddReferralResponse';
 import { AuthErrorResponse } from '../models/AuthErrorResponse';
 import { AuthErrorResponseError } from '../models/AuthErrorResponseError';
 import { CalendarAppointmentCreateRequestBody    , CalendarAppointmentCreateRequestBodyStatusEnum     , CalendarAppointmentCreateRequestBodyContextEnum    } from '../models/CalendarAppointmentCreateRequestBody';
@@ -87,6 +93,7 @@ let primitives = [
                  ];
 
 let enumsMap: Set<string> = new Set<string>([
+    "AddReferralResponseStatusEnum",
     "CalendarAppointmentCreateRequestBodyStatusEnum",
     "CalendarAppointmentCreateRequestBodyContextEnum",
     "CalendarEventCommonRequestBodyFieldsStatusEnum",
@@ -101,6 +108,9 @@ let enumsMap: Set<string> = new Set<string>([
 ]);
 
 let typeMap: {[index: string]: any} = {
+    "AddReferralData": AddReferralData,
+    "AddReferralRequestBody": AddReferralRequestBody,
+    "AddReferralResponse": AddReferralResponse,
     "AuthErrorResponse": AuthErrorResponse,
     "AuthErrorResponseError": AuthErrorResponseError,
     "CalendarAppointmentCreateRequestBody": CalendarAppointmentCreateRequestBody,

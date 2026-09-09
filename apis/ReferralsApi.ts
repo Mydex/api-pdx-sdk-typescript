@@ -8,6 +8,8 @@ import {canConsumeForm, isCodeInRange} from '../util';
 import {SecurityAuthentication} from '../auth/auth';
 
 
+import { AddReferralRequestBody } from '../models/AddReferralRequestBody';
+import { AddReferralResponse } from '../models/AddReferralResponse';
 import { AuthErrorResponse } from '../models/AuthErrorResponse';
 import { CreateResponse } from '../models/CreateResponse';
 import { ErrorResponse } from '../models/ErrorResponse';
@@ -21,6 +23,83 @@ import { UpdateResponse } from '../models/UpdateResponse';
  * no description
  */
 export class ReferralsApiRequestFactory extends BaseAPIRequestFactory {
+
+    /**
+     * Creates a new referral in the member\'s PDS targeting a remote service identified by a DSSA UUID. If the member is already connected to the remote DSSA the referral is created with status \'complete\' and the remote service is notified. If the member is not connected the referral is created with status \'pending\' and either an FTC URL is returned (member_present=true) or a notification is sent to the member (member_present=false).
+     * Initiates a referral to a remote DSSA.
+     * @param connectionToken Member\&#39;s Connection Key
+     * @param uid The unique ID of a mydex member
+     * @param conId The connection_id is a shared id between a connection and a member. It is a hyphenated combination of the member UID and the Dedicated Connection NID.
+     * @param addReferralRequestBody 
+     */
+    public async addReferral(connectionToken: string, uid: string, conId: string, addReferralRequestBody?: AddReferralRequestBody, _options?: Configuration): Promise<RequestContext> {
+        let _config = _options || this.configuration;
+
+        // verify required parameter 'connectionToken' is not null or undefined
+        if (connectionToken === null || connectionToken === undefined) {
+            throw new RequiredError("ReferralsApi", "addReferral", "connectionToken");
+        }
+
+
+        // verify required parameter 'uid' is not null or undefined
+        if (uid === null || uid === undefined) {
+            throw new RequiredError("ReferralsApi", "addReferral", "uid");
+        }
+
+
+        // verify required parameter 'conId' is not null or undefined
+        if (conId === null || conId === undefined) {
+            throw new RequiredError("ReferralsApi", "addReferral", "conId");
+        }
+
+
+
+        // Path Params
+        const localVarPath = '/referrals/add';
+
+        // Make Request Context
+        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
+        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
+
+        // Query Params
+        if (uid !== undefined) {
+            requestContext.setQueryParam("uid", ObjectSerializer.serialize(uid, "string", ""));
+        }
+
+        // Query Params
+        if (conId !== undefined) {
+            requestContext.setQueryParam("con_id", ObjectSerializer.serialize(conId, "string", ""));
+        }
+
+        // Header Params
+        requestContext.setHeaderParam("Connection-Token", ObjectSerializer.serialize(connectionToken, "string", ""));
+
+
+        // Body Params
+        const contentType = ObjectSerializer.getPreferredMediaType([
+            "application/json"
+        ]);
+        requestContext.setHeaderParam("Content-Type", contentType);
+        const serializedBody = ObjectSerializer.stringify(
+            ObjectSerializer.serialize(addReferralRequestBody, "AddReferralRequestBody", ""),
+            contentType
+        );
+        requestContext.setBody(serializedBody);
+
+        let authMethod: SecurityAuthentication | undefined;
+        // Apply auth methods
+        authMethod = _config.authMethods["oauth2"]
+        if (authMethod?.applySecurityAuthentication) {
+            await authMethod?.applySecurityAuthentication(requestContext);
+        }
+        
+        const defaultAuth: SecurityAuthentication | undefined = _config?.authMethods?.default
+        if (defaultAuth?.applySecurityAuthentication) {
+            await defaultAuth?.applySecurityAuthentication(requestContext);
+        }
+
+        return requestContext;
+    }
 
     /**
      * Returns a list of referrals.
@@ -319,6 +398,49 @@ export class ReferralsApiRequestFactory extends BaseAPIRequestFactory {
 }
 
 export class ReferralsApiResponseProcessor {
+
+    /**
+     * Unwraps the actual response sent by the server from the response context and deserializes the response content
+     * to the expected objects
+     *
+     * @params response Response returned by the server for a request to addReferral
+     * @throws ApiException if the response code was not in [200, 299]
+     */
+     public async addReferralWithHttpInfo(response: ResponseContext): Promise<HttpInfo<AddReferralResponse >> {
+        const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
+        if (isCodeInRange("200", response.httpStatusCode)) {
+            const body: AddReferralResponse = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "AddReferralResponse", ""
+            ) as AddReferralResponse;
+            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
+        }
+        if (isCodeInRange("400", response.httpStatusCode)) {
+            const body: ErrorResponse = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "ErrorResponse", ""
+            ) as ErrorResponse;
+            throw new ApiException<ErrorResponse>(response.httpStatusCode, "Bad Request", body, response.headers);
+        }
+        if (isCodeInRange("401", response.httpStatusCode)) {
+            const body: AuthErrorResponse = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "AuthErrorResponse", ""
+            ) as AuthErrorResponse;
+            throw new ApiException<AuthErrorResponse>(response.httpStatusCode, "Unauthorized", body, response.headers);
+        }
+
+        // Work around for missing responses in specification, e.g. for petstore.yaml
+        if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
+            const body: AddReferralResponse = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "AddReferralResponse", ""
+            ) as AddReferralResponse;
+            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
+        }
+
+        throw new ApiException<string | Blob | undefined>(response.httpStatusCode, "Unknown API Status Code!", await response.getBodyAsAny(), response.headers);
+    }
 
     /**
      * Unwraps the actual response sent by the server from the response context and deserializes the response content

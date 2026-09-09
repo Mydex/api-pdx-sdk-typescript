@@ -19,6 +19,9 @@ http/http.ts
 http/isomorphic-fetch.ts
 index.ts
 middleware.ts
+models/AddReferralData.ts
+models/AddReferralRequestBody.ts
+models/AddReferralResponse.ts
 models/AuthErrorResponse.ts
 models/AuthErrorResponseError.ts
 models/CalendarAppointmentCreateRequestBody.ts

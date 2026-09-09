@@ -3,6 +3,9 @@ import { Configuration, ConfigurationOptions, mergeConfiguration } from '../conf
 import type { Middleware } from '../middleware';
 import { Observable, of, from } from '../rxjsStub';
 import {mergeMap, map} from  '../rxjsStub';
+import { AddReferralData } from '../models/AddReferralData';
+import { AddReferralRequestBody } from '../models/AddReferralRequestBody';
+import { AddReferralResponse } from '../models/AddReferralResponse';
 import { AuthErrorResponse } from '../models/AuthErrorResponse';
 import { AuthErrorResponseError } from '../models/AuthErrorResponseError';
 import { CalendarAppointmentCreateRequestBody } from '../models/CalendarAppointmentCreateRequestBody';
@@ -313,6 +316,46 @@ export class ObservableReferralsApi {
         this.configuration = configuration;
         this.requestFactory = requestFactory || new ReferralsApiRequestFactory(configuration);
         this.responseProcessor = responseProcessor || new ReferralsApiResponseProcessor();
+    }
+
+    /**
+     * Creates a new referral in the member\'s PDS targeting a remote service identified by a DSSA UUID. If the member is already connected to the remote DSSA the referral is created with status \'complete\' and the remote service is notified. If the member is not connected the referral is created with status \'pending\' and either an FTC URL is returned (member_present=true) or a notification is sent to the member (member_present=false).
+     * Initiates a referral to a remote DSSA.
+     * @param connectionToken Member\&#39;s Connection Key
+     * @param uid The unique ID of a mydex member
+     * @param conId The connection_id is a shared id between a connection and a member. It is a hyphenated combination of the member UID and the Dedicated Connection NID.
+     * @param [addReferralRequestBody]
+     */
+    public addReferralWithHttpInfo(connectionToken: string, uid: string, conId: string, addReferralRequestBody?: AddReferralRequestBody, _options?: ConfigurationOptions): Observable<HttpInfo<AddReferralResponse>> {
+        const _config = mergeConfiguration(this.configuration, _options);
+
+        const requestContextPromise = this.requestFactory.addReferral(connectionToken, uid, conId, addReferralRequestBody, _config);
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (const middleware of _config.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => _config.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (const middleware of _config.middleware.reverse()) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.addReferralWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Creates a new referral in the member\'s PDS targeting a remote service identified by a DSSA UUID. If the member is already connected to the remote DSSA the referral is created with status \'complete\' and the remote service is notified. If the member is not connected the referral is created with status \'pending\' and either an FTC URL is returned (member_present=true) or a notification is sent to the member (member_present=false).
+     * Initiates a referral to a remote DSSA.
+     * @param connectionToken Member\&#39;s Connection Key
+     * @param uid The unique ID of a mydex member
+     * @param conId The connection_id is a shared id between a connection and a member. It is a hyphenated combination of the member UID and the Dedicated Connection NID.
+     * @param [addReferralRequestBody]
+     */
+    public addReferral(connectionToken: string, uid: string, conId: string, addReferralRequestBody?: AddReferralRequestBody, _options?: ConfigurationOptions): Observable<AddReferralResponse> {
+        return this.addReferralWithHttpInfo(connectionToken, uid, conId, addReferralRequestBody, _options).pipe(map((apiResponse: HttpInfo<AddReferralResponse>) => apiResponse.data));
     }
 
     /**
